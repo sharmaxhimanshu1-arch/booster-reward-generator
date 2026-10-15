@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Studio — Daily Booster</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/beckhaul-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="wrap">
+
+  <p class="backlink"><a href="index.html">&larr; All templates</a></p>
+
+  <div id="missing" hidden>
+    <h1>That template is not here</h1>
+    <p class="sub">The link may be out of date. <a href="index.html">Pick a template</a> from the home screen.</p>
+  </div>
+
+  <div id="studio">
+    <header class="pagehead">
+      <h1 id="tname">Studio</h1>
+      <p class="sub" id="tdesc"></p>
+    </header>
+
+    <div class="cols">
+      <div>
+        <div class="banner" id="examplebanner">
+          <div>Loaded with example crews so you can see the board. <button type="button" id="clearexamples">Clear them</button></div>
+        </div>
+
+        <section class="card">
+          <h2>Details</h2>
+          <div id="fields" class="fieldgrid"></div>
+        </section>
+
+        <section class="card" id="rowcard" hidden>
+          <h2>Rows</h2>
+          <div class="grid-head" id="gridhead"></div>
+          <div id="rows"></div>
+          <div class="btn-row">
+            <button type="button" class="btn" id="addrow">Add row</button>
+            <button type="button" class="btn" id="sortrows">Sort by meters</button>
+          </div>
+          <p class="note" id="rownote"></p>
+        </section>
+
+        <section class="card">
+          <h2>Tier reference</h2>
+          <div id="tiers"></div>
+          <p class="note">To change a threshold or an amount, edit <code>tiers.json</code> in the repository and commit. Every template picks up the change.</p>
+        </section>
+      </div>
+
+      <div class="previewcol">
+        <div class="stage" id="stage"><div id="board"></div></div>
+        <div class="btn-row">
+          <button type="button" class="btn btn-primary" id="download">Download PNG</button>
+        </div>
+        <p class="status" id="status"></p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="pagefoot">
+    <p>What you type stays in this browser. Nothing is uploaded or committed.</p>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="core.js"></script>
+<script src="templates/winners.js"></script>
+<script src="templates/rewards.js"></script>
+<script src="tierref.js"></script>
+<script src="studio.js"></script>
+</body>
+</html>

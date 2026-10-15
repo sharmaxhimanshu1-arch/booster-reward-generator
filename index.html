@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Daily Booster Studio — Beckhaul Technologies</title>
-<meta name="description" content="Fill in yesterday's crews and download the Daily Booster winners board as a PNG.">
+<meta name="description" content="Pick a creative template, fill in the details and download it for WhatsApp.">
 <meta name="robots" content="noindex">
 <link rel="icon" href="assets/beckhaul-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,61 +15,32 @@
 <body>
 
 <div class="wrap">
-  <header class="pagehead">
-    <h1>Daily Booster Studio</h1>
-    <p class="sub">Enter yesterday's crews and download the winners board as a PNG for WhatsApp. Tier thresholds and amounts come from <code>tiers.json</code> in this repository.</p>
+  <header class="pagehead home-head">
+    <img class="home-logo" src="assets/beckhaul-logo.png" alt="Beckhaul Technologies">
+    <div>
+      <h1>Daily Booster Studio</h1>
+      <p class="sub">Pick a template, fill in the details and download the creative as a PNG for the crew's WhatsApp group.</p>
+    </div>
   </header>
 
-  <div class="cols">
-    <div>
-      <div class="banner" id="examplebanner">
-        <div>Loaded with example crews so you can see the board. <button type="button" id="clearexamples">Clear them</button></div>
-      </div>
+  <h2 class="sectionhead">Templates</h2>
+  <div class="gallery" id="gallery"></div>
 
-      <section class="card">
-        <h2>Board date</h2>
-        <div class="field-narrow">
-          <label for="boarddate">Date shown on the board</label>
-          <input type="date" id="boarddate">
-        </div>
-        <p class="note" id="datenote"></p>
-      </section>
-
-      <section class="card">
-        <h2>Winners</h2>
-        <div class="grid-head">
-          <span>Operator</span><span>Tracker</span><span>Meters</span><span>Tier</span><span></span>
-        </div>
-        <div id="rows"></div>
-        <div class="btn-row">
-          <button type="button" class="btn" id="addrow">Add crew</button>
-          <button type="button" class="btn" id="sortrows">Sort by meters</button>
-        </div>
-        <p class="note" id="rownote"></p>
-      </section>
-
-      <section class="card">
-        <h2>Tier reference</h2>
-        <div id="tiers"></div>
-        <p class="note">To change a threshold or an amount, edit <code>tiers.json</code> in the repository and commit. Every manager sees the new values on their next page load.</p>
-      </section>
-    </div>
-
-    <div class="previewcol">
-      <div class="stage" id="stage"><div id="board"></div></div>
-      <div class="btn-row">
-        <button type="button" class="btn btn-primary" id="download">Download PNG</button>
-      </div>
-      <p class="status" id="status"></p>
-    </div>
-  </div>
+  <section class="card tierpanel">
+    <h2>Current tiers</h2>
+    <div id="tiers"></div>
+    <p class="note">Every template reads these from <code>tiers.json</code>. Change an amount there and commit, and the whole set follows.</p>
+  </section>
 
   <footer class="pagefoot">
-    <p>Crew names stay in this browser. Nothing you type here is uploaded or committed.</p>
+    <p>What you type into a template stays in your browser. Nothing is uploaded or committed.</p>
   </footer>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="app.js"></script>
+<script src="core.js"></script>
+<script src="templates/winners.js"></script>
+<script src="templates/rewards.js"></script>
+<script src="tierref.js"></script>
+<script src="home.js"></script>
 </body>
 </html>
