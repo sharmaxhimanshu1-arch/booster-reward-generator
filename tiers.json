@@ -1,0 +1,41 @@
+{
+  "_comment": "Single source of truth for the Daily Booster reward tiers. Edit this file and commit; every manager picks up the change on their next page load. 'min' is the daily meters a crew must reach. 'amount' is paid to the Operator AND to the Tracker, so a Gold crew costs 2 x 500.",
+  "currency": "₹",
+  "maxRowsOnBoard": 12,
+  "brand": {
+    "name": "Beckhaul Technologies",
+    "logo": "assets/beckhaul-logo.png"
+  },
+  "tiers": [
+    {
+      "key": "diamond",
+      "name": "Diamond",
+      "min": 1000,
+      "amount": 800,
+      "mark": "diamond",
+      "color": "#7FD8F7",
+      "edge": "#7FD8F7",
+      "tint": "rgba(127,216,247,0.14)"
+    },
+    {
+      "key": "gold",
+      "name": "Gold",
+      "min": 700,
+      "amount": 500,
+      "mark": "star",
+      "color": "#FFC20E",
+      "edge": "#FFC20E",
+      "tint": "rgba(255,194,14,0.08)"
+    },
+    {
+      "key": "silver",
+      "name": "Silver",
+      "min": 600,
+      "amount": 300,
+      "mark": "ring",
+      "color": "#C3CBD6",
+      "edge": "#4A545F",
+      "tint": ""
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Daily Booster Studio — Beckhaul Technologies</title>
+<meta name="description" content="Fill in yesterday's crews and download the Daily Booster winners board as a PNG.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/beckhaul-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="wrap">
+  <header class="pagehead">
+    <h1>Daily Booster Studio</h1>
+    <p class="sub">Enter yesterday's crews and download the winners board as a PNG for WhatsApp. Tier thresholds and amounts come from <code>tiers.json</code> in this repository.</p>
+  </header>
+
+  <div class="cols">
+    <div>
+      <div class="banner" id="examplebanner">
+        <div>Loaded with example crews so you can see the board. <button type="button" id="clearexamples">Clear them</button></div>
+      </div>
+
+      <section class="card">
+        <h2>Board date</h2>
+        <div class="field-narrow">
+          <label for="boarddate">Date shown on the board</label>
+          <input type="date" id="boarddate">
+        </div>
+        <p class="note" id="datenote"></p>
+      </section>
+
+      <section class="card">
+        <h2>Winners</h2>
+        <div class="grid-head">
+          <span>Operator</span><span>Tracker</span><span>Meters</span><span>Tier</span><span></span>
+        </div>
+        <div id="rows"></div>
+        <div class="btn-row">
+          <button type="button" class="btn" id="addrow">Add crew</button>
+          <button type="button" class="btn" id="sortrows">Sort by meters</button>
+        </div>
+        <p class="note" id="rownote"></p>
+      </section>
+
+      <section class="card">
+        <h2>Tier reference</h2>
+        <div id="tiers"></div>
+        <p class="note">To change a threshold or an amount, edit <code>tiers.json</code> in the repository and commit. Every manager sees the new values on their next page load.</p>
+      </section>
+    </div>
+
+    <div class="previewcol">
+      <div class="stage" id="stage"><div id="board"></div></div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-primary" id="download">Download PNG</button>
+      </div>
+      <p class="status" id="status"></p>
+    </div>
+  </div>
+
+  <footer class="pagefoot">
+    <p>Crew names stay in this browser. Nothing you type here is uploaded or committed.</p>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
