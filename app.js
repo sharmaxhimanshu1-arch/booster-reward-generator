@@ -136,22 +136,25 @@
 
     for (var i = 0; i < state.rows.length; i++) {
       var r = state.rows[i];
-      var opts = '<option value="">Auto</option>';
+      var auto = r.m > 0 ? tierFor(r.m) : null;
+      var autoLabel = auto
+        ? "Auto — " + auto.name + " " + config.currency + auto.amount
+        : "Auto — below target";
+      var opts = '<option value="">' + esc(autoLabel) + "</option>";
       for (var j = 0; j < list.length; j++) {
         opts += '<option value="' + esc(list[j].key) + '"' +
-          (r.tier === list[j].key ? " selected" : "") + ">" + esc(list[j].name) + "</option>";
+          (r.tier === list[j].key ? " selected" : "") + ">" + esc(list[j].name) +
+          " " + config.currency + list[j].amount + "</option>";
       }
-      var eff = effectiveTier(r);
-      var label = eff ? eff.name + " · " + config.currency + eff.amount : "Below target";
 
       html += '<div class="row" data-i="' + i + '">' +
-        '<div class="f-op"><label for="op' + i + '">Operator</label>' +
+        '<div class="f-op"><label class="sr-only" for="op' + i + '">Operator</label>' +
         '<input id="op' + i + '" data-f="op" value="' + esc(r.op) + '" placeholder="Operator name" autocomplete="off"></div>' +
-        '<div class="f-tr"><label for="tr' + i + '">Tracker</label>' +
+        '<div class="f-tr"><label class="sr-only" for="tr' + i + '">Tracker</label>' +
         '<input id="tr' + i + '" data-f="tr" value="' + esc(r.tr) + '" placeholder="Tracker name" autocomplete="off"></div>' +
-        '<div class="f-m"><label for="m' + i + '">Meters</label>' +
+        '<div class="f-m"><label class="sr-only" for="m' + i + '">Meters</label>' +
         '<input id="m' + i + '" data-f="m" type="number" min="0" step="1" inputmode="numeric" value="' + (r.m || "") + '" placeholder="0"></div>' +
-        '<div class="f-t"><label for="t' + i + '">Tier — ' + esc(label) + '</label>' +
+        '<div class="f-t"><label class="sr-only" for="t' + i + '">Tier</label>' +
         '<select id="t' + i + '" data-f="tier">' + opts + "</select></div>" +
         '<button type="button" class="icon-btn" data-remove="' + i + '" aria-label="Remove row ' + (i + 1) + '">&times;</button>' +
         "</div>";
