@@ -9,6 +9,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700;800&display=swap">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#FFC42E">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Booster">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -80,5 +86,14 @@
 <script src="templates/win.js"></script>
 <script src="tierref.js"></script>
 <script src="studio.js"></script>
+<script>
+/* Register the service worker so the studio can be installed to a home screen
+   and still opens on a bad site connection. */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("sw.js").catch(function () { /* fine without it */ });
+  });
+}
+</script>
 </body>
 </html>

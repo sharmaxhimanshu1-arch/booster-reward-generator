@@ -8,7 +8,7 @@ A manager opens the home screen, picks a template, fills in the details and
 downloads a ready-to-send PNG. It is a static site: no server, no database and
 no build step.
 
-**Live:** https://sharmaxhimanshu1-arch.github.io/booster-reward-generator/
+**Live:** https://sharmaxhimanshu1-arch.github.io/booster/
 
 ## What is in here
 
@@ -23,7 +23,9 @@ Four creatives ship today: **Yesterday's Winners** and **Booster Rewards** in th
 dark style, **Winners Podium** and **Win Cash Rewards** in the yellow style.
 | `tiers.json` | **Tier thresholds and amounts. The single source of truth.** |
 | `styles.css` | Tool chrome and the shared board frame |
-| `assets/` | The company logo |
+| `assets/` | The company logo and the app icons |
+| `manifest.json`, `sw.js`, `install.js` | Installable app: icons, offline shell, install prompt |
+| `404.html` | Short links — turns `/podium` into the studio for that template |
 
 ## Using it
 
@@ -70,6 +72,40 @@ Copy a file in `templates/`, change its `id`, `render()` and `css`, and add one
 
 GitHub Pages serves `main` from the repository root (**Settings → Pages →
 Deploy from a branch**).
+
+### Short links
+
+A template opens at its own path, which is what you paste into a crew group:
+
+```
+https://sharmaxhimanshu1-arch.github.io/booster/podium
+https://sharmaxhimanshu1-arch.github.io/booster/win
+https://sharmaxhimanshu1-arch.github.io/booster/winners
+https://sharmaxhimanshu1-arch.github.io/booster/rewards
+```
+
+Pages has no rewrite rules, so `404.html` does the work: it catches any path
+with no file behind it, reads the last segment and sends the browser to
+`studio.html?t=<id>`. It works for every template, including new ones, with no
+file to add. Two consequences worth knowing: the address bar ends up showing
+the long form, and the first response carries a 404 status before the redirect,
+which some link previews render as a broken link. The long URLs keep working.
+
+### Installing it on a phone
+
+The site is a progressive web app. On Android Chrome the home screen offers an
+**Install** button; on an iPhone it shows the Safari steps instead, since Safari
+has no install event. Once installed it opens from the home screen icon with no
+URL to type.
+
+A service worker caches the app shell, the templates and `tiers.json`
+network-first, so the studio still opens on a bad site connection and picks up
+changes as soon as there is signal. Exporting a PNG needs the renderer from the
+CDN, so a board built with no connection at all may not download until there is
+signal again.
+
+After changing a file that the shell caches, bump `CACHE` in `sw.js` if you want
+installed phones to drop the old copies rather than refresh them one by one.
 
 This repository is public, so **anyone with the URL can open the site and read
 `tiers.json`**, including the reward amounts. The pages carry `noindex` so

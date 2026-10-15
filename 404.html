@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daily Booster Studio</title>
+<meta name="robots" content="noindex">
+<script>
+/* Short links. GitHub Pages serves this page for any path it has no file for,
+   so /booster/podium lands here and is sent on to that template. Anything that
+   is not a template id goes to the home screen. */
+(function () {
+  var clean = location.pathname.replace(/\/+$/, "");
+  var cut = clean.lastIndexOf("/");
+  var id = clean.slice(cut + 1);
+  var base = clean.slice(0, cut + 1);
+  if (base !== "/" && /^[a-z0-9-]{1,40}$/.test(id) && id !== "404.html") {
+    location.replace(base + "studio.html?t=" + encodeURIComponent(id));
+  } else {
+    location.replace(base);
+  }
+})();
+</script>
+</head>
+<body>
+<p>Taking you to the studio. <a href="./">Open the home screen</a> if nothing happens.</p>
+</body>
+</html>
