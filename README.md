@@ -18,14 +18,14 @@ no build step.
 | `studio.html`, `studio.js` | The editor. Builds its form from whichever template `?t=` names |
 | `core.js` | Template registry, tier config, tier badges, preview scaling, PNG export |
 | `templates/*.js` | One file per creative. See `templates/README.md` |
-
-Four creatives ship today: **Yesterday's Winners** and **Booster Rewards** in the
-dark style, **Winners Podium** and **Win Cash Rewards** in the yellow style.
 | `tiers.json` | **Tier thresholds and amounts. The single source of truth.** |
 | `styles.css` | Tool chrome and the shared board frame |
 | `assets/` | The company logo and the app icons |
 | `manifest.json`, `sw.js`, `install.js` | Installable app: icons, offline shell, install prompt |
 | `404.html` | Short links — turns `/podium` into the studio for that template |
+
+Four creatives ship today: **Yesterday's Winners** and **Booster Rewards** in the
+dark style, **Winners Podium** and **Win Cash Rewards** in the yellow style.
 
 ## Using it
 
@@ -46,8 +46,24 @@ is per-browser and not shared.
 
 ## Changing the reward amounts
 
-Edit `tiers.json` and commit. Every template reads it at page load, so the
-winners board, the rewards poster and the tier panels all change together.
+`tiers.json` is what everyone shares. Every template reads it at page load, so
+the winners board, the rewards poster and the tier panels all change together.
+
+There are two ways to change a value.
+
+**Try it out, on one device.** The tier panel on the home screen and in the
+studio is editable: change a threshold or an amount and every board updates
+straight away. That edit is saved in that browser alone and reaches nobody else,
+so the panel marks itself *Changed on this device* and offers two buttons —
+**Download tiers.json**, which hands you the file with your values in it, and
+**Undo my changes**, which goes back to the committed ones.
+
+**Make it stick for everyone.** Commit that downloaded file over `tiers.json`.
+Until you do, a manager on another phone still generates boards at the old
+amounts, which is the one failure worth watching for: two boards, same day,
+different money.
+
+Editing the file directly works just as well:
 
 ```json
 { "key": "gold", "name": "Gold", "min": 700, "amount": 500, "mark": "star", ... }

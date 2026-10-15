@@ -31,7 +31,12 @@ window.Booster = (function () {
     ring: '<svg width="W" height="W" viewBox="0 0 24 24" aria-hidden="true" style="flex:none"><circle cx="12" cy="12" r="8.6" fill="none" stroke="C" stroke-width="2.2"></circle><circle cx="12" cy="12" r="3.4" fill="C"></circle></svg>'
   };
 
+  var OVERRIDE_KEY = "booster-tiers-override-v1";
+
   var config = FALLBACK;
+  var baseTiers = FALLBACK.tiers;   // as committed in tiers.json
+  var overrides = {};               // { tierKey: {min, amount} } for THIS browser only
+  var listeners = [];
   var order = [];
   var byId = {};
 
@@ -74,10 +79,97 @@ window.Booster = (function () {
             brand: json.brand || FALLBACK.brand,
             tiers: json.tiers
           };
+          baseTiers = json.tiers;
         }
       })
-      .catch(function () { /* keep the built-in tiers */ });
+      .catch(function () { /* keep the built-in tiers */ })
+      .then(function () {
+        readOverrides();
+        applyOverrides();
+      });
   }
+
+  /* ---------- amounts changed on this device ----------
+     tiers.json is what everyone shares. A manager can still change a threshold
+     or an amount here, which is kept in this browser only and never reaches
+     anyone else — so the UI has to say so, and offer the file to commit. */
+
+  function readOverrides() {
+    try {
+      var raw = localStorage.getItem(OVERRIDE_KEY);
+      overrides = raw ? (JSON.parse(raw) || {}) : {};
+    } catch (e) { overrides = {}; }
+  }
+
+  function writeOverrides() {
+    try {
+      if (hasOverrides()) localStorage.setItem(OVERRIDE_KEY, JSON.stringify(overrides));
+      else localStorage.removeItem(OVERRIDE_KEY);
+    } catch (e) { /* blocked storage: the edit lives for this page load only */ }
+  }
+
+  function applyOverrides() {
+    config.tiers = baseTiers.map(function (t) {
+      var o = overrides[t.key];
+      if (!o) return t;
+      var copy = {};
+      for (var k in t) if (Object.prototype.hasOwnProperty.call(t, k)) copy[k] = t[k];
+      if (typeof o.min === "number") copy.min = o.min;
+      if (typeof o.amount === "number") copy.amount = o.amount;
+      return copy;
+    });
+    listeners.forEach(function (fn) { try { fn(); } catch (e) { /* one listener must not stop the rest */ } });
+  }
+
+  function hasOverrides() {
+    for (var k in overrides) {
+      if (Object.prototype.hasOwnProperty.call(overrides, k)) return true;
+    }
+    return false;
+  }
+
+  /* field is "min" or "amount"; a value equal to the committed one clears the
+     override rather than storing a redundant copy. */
+  function setTierValue(key, field, value) {
+    var base = null;
+    for (var i = 0; i < baseTiers.length; i++) if (baseTiers[i].key === key) base = baseTiers[i];
+    if (!base) return;
+
+    var n = Math.max(0, Math.round(Number(value) || 0));
+    if (n === base[field]) {
+      if (overrides[key]) {
+        delete overrides[key][field];
+        var empty = true;
+        for (var f in overrides[key]) if (Object.prototype.hasOwnProperty.call(overrides[key], f)) empty = false;
+        if (empty) delete overrides[key];
+      }
+    } else {
+      if (!overrides[key]) overrides[key] = {};
+      overrides[key][field] = n;
+    }
+    writeOverrides();
+    applyOverrides();
+  }
+
+  function resetTiers() {
+    overrides = {};
+    writeOverrides();
+    applyOverrides();
+  }
+
+  /* The committed file with this device's values folded in, ready to replace
+     tiers.json in the repository. */
+  function tiersFile() {
+    var out = {
+      currency: config.currency,
+      maxRowsOnBoard: config.maxRowsOnBoard,
+      brand: config.brand,
+      tiers: config.tiers
+    };
+    return JSON.stringify(out, null, 2) + "\n";
+  }
+
+  function onTiersChanged(fn) { if (typeof fn === "function") listeners.push(fn); }
 
   /* ---------- text ---------- */
 
@@ -199,6 +291,11 @@ window.Booster = (function () {
     get: get,
     getConfig: getConfig,
     loadConfig: loadConfig,
+    setTierValue: setTierValue,
+    resetTiers: resetTiers,
+    hasOverrides: hasOverrides,
+    tiersFile: tiersFile,
+    onTiersChanged: onTiersChanged,
     esc: esc,
     todayISO: todayISO,
     formatDate: formatDate,

@@ -72,5 +72,6 @@
   }
 
   window.addEventListener("resize", refit);
+  Booster.onTiersChanged(draw);
   Booster.loadConfig().then(draw);
 })();

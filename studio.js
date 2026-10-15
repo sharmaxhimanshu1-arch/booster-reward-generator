@@ -283,5 +283,11 @@
     refresh();
   }
 
+  Booster.onTiersChanged(function () {
+    if (!template) return;
+    renderRows();
+    renderBoard();
+  });
+
   Booster.loadConfig().then(start);
 })();
