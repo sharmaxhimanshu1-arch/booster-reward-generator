@@ -8,7 +8,7 @@ A manager opens the home screen, picks a template, fills in the details and
 downloads a ready-to-send PNG. It is a static site: no server, no database and
 no build step.
 
-**Live:** https://sharmaxhimanshu1-arch.github.io/booster/
+**Live:** https://sharmaxhimanshu1-arch.github.io/booster-reward-generator/
 
 ## What is in here
 
@@ -78,10 +78,10 @@ Deploy from a branch**).
 A template opens at its own path, which is what you paste into a crew group:
 
 ```
-https://sharmaxhimanshu1-arch.github.io/booster/podium
-https://sharmaxhimanshu1-arch.github.io/booster/win
-https://sharmaxhimanshu1-arch.github.io/booster/winners
-https://sharmaxhimanshu1-arch.github.io/booster/rewards
+https://sharmaxhimanshu1-arch.github.io/booster-reward-generator/podium
+https://sharmaxhimanshu1-arch.github.io/booster-reward-generator/win
+https://sharmaxhimanshu1-arch.github.io/booster-reward-generator/winners
+https://sharmaxhimanshu1-arch.github.io/booster-reward-generator/rewards
 ```
 
 Pages has no rewrite rules, so `404.html` does the work: it catches any path
