@@ -18,6 +18,9 @@ no build step.
 | `studio.html`, `studio.js` | The editor. Builds its form from whichever template `?t=` names |
 | `core.js` | Template registry, tier config, tier badges, preview scaling, PNG export |
 | `templates/*.js` | One file per creative. See `templates/README.md` |
+
+Four creatives ship today: **Yesterday's Winners** and **Booster Rewards** in the
+dark style, **Winners Podium** and **Win Cash Rewards** in the yellow style.
 | `tiers.json` | **Tier thresholds and amounts. The single source of truth.** |
 | `styles.css` | Tool chrome and the shared board frame |
 | `assets/` | The company logo |

@@ -97,6 +97,19 @@ Escape anything a manager typed with `Booster.esc()`.
 | `Booster.mark(tier, size)` | the tier's badge as inline SVG |
 | `Booster.getConfig()` | the parsed `tiers.json` |
 
+## Fonts
+
+A template may use a face the pages do not load yet. Add it to the Google Fonts
+`<link>` in **both** `index.html` and `studio.html`, and give the CSS a real
+fallback stack.
+
+Watch what happens when that font does not load. Condensed faces such as Anton
+and Barlow Condensed are much narrower than the fallback, so a line sized to fit
+with them can wrap without them — and on a fixed-height board one extra line
+pushes everything past the frame. Build each band so it cannot grow: give the
+fixed bands `flex: none`, let one band flex with `min-height: 0`, and put
+`white-space: nowrap` on headings sized to the exact width.
+
 ## Keep in mind
 
 - The board is painted by `html2canvas`, which supports ordinary layout, CSS
