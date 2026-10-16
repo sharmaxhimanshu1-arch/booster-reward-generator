@@ -5,7 +5,7 @@
  * connection. Exporting a PNG needs the renderer from the CDN, so a board made
  * fully offline may not download until there is signal again.
  */
-var CACHE = "booster-v2";
+var CACHE = "booster-v3";
 
 var SHELL = [
   "./",
@@ -23,6 +23,8 @@ var SHELL = [
   "templates/rewards.js",
   "templates/podium.js",
   "templates/win.js",
+  "templates/simple-winners.js",
+  "templates/simple-rewards.js",
   "assets/beckhaul-logo.png",
   "assets/icon-192.png",
   "assets/icon-512.png"

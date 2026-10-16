@@ -24,8 +24,14 @@ no build step.
 | `manifest.json`, `sw.js`, `install.js` | Installable app: icons, offline shell, install prompt |
 | `404.html` | Short links — turns `/podium` into the studio for that template |
 
-Four creatives ship today: **Yesterday's Winners** and **Booster Rewards** in the
-dark style, **Winners Podium** and **Win Cash Rewards** in the yellow style.
+Six creatives ship today, as three couplets — a leaderboard and a tier poster
+in each style:
+
+| Style | Leaderboard | Tier poster |
+| --- | --- | --- |
+| Dark | Yesterday's Winners | Booster Rewards |
+| Yellow | Winners Podium | Win Cash Rewards |
+| Warm gradient | Simple Winners | Simple Rewards |
 
 ## Using it
 
