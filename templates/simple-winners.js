@@ -12,6 +12,9 @@
  */
 Booster.register({
   id: "simple-winners",
+  couplet: "warm",
+  coupletName: "Warm gradient",
+  role: "leaderboard",
   name: "Simple Winners",
   description: "The plain ranked list on the warm gradient. One row per crew, the tier guide underneath.",
   size: { w: 1080, h: 1350 },

@@ -31,14 +31,12 @@ window.Booster = (function () {
     ring: '<svg width="W" height="W" viewBox="0 0 24 24" aria-hidden="true" style="flex:none"><circle cx="12" cy="12" r="8.6" fill="none" stroke="C" stroke-width="2.2"></circle><circle cx="12" cy="12" r="3.4" fill="C"></circle></svg>'
   };
 
-  var OVERRIDE_KEY = "booster-tiers-override-v1";
-
   var config = FALLBACK;
-  var baseTiers = FALLBACK.tiers;   // as committed in tiers.json
-  var overrides = {};               // { tierKey: {min, amount} } for THIS browser only
-  var listeners = [];
+  var baseTiers = FALLBACK.tiers;   // the defaults, as committed in tiers.json
+  var activeTiers = null;           // what the board being rendered right now uses
   var order = [];
   var byId = {};
+  var couplets = [];                // couplet ids, in the order they first appear
 
   /* ---------- registry ---------- */
 
@@ -53,6 +51,26 @@ window.Booster = (function () {
     }
     byId[t.id] = t;
     order.push(t.id);
+    if (t.couplet && couplets.indexOf(t.couplet) === -1) couplets.push(t.couplet);
+  }
+
+  /* The templates grouped into couplets: a leaderboard and its matching reward
+     poster, which share a look and are meant to go out together. */
+  function coupletList() {
+    var groups = couplets.map(function (id) {
+      var members = list().filter(function (t) { return t.couplet === id; });
+      return { id: id, name: (members[0] && members[0].coupletName) || id, templates: members };
+    });
+    var loose = list().filter(function (t) { return !t.couplet; });
+    if (loose.length) groups.push({ id: "other", name: "Other", templates: loose });
+    return groups;
+  }
+
+  /* The other half of a template's couplet, for the link between the two. */
+  function partnerOf(t) {
+    if (!t || !t.couplet) return null;
+    var others = list().filter(function (o) { return o.couplet === t.couplet && o.id !== t.id; });
+    return others[0] || null;
   }
 
   function list() {
@@ -63,7 +81,14 @@ window.Booster = (function () {
     return byId[id] || null;
   }
 
-  function getConfig() { return config; }
+  function getConfig() {
+    return {
+      currency: config.currency,
+      maxRowsOnBoard: config.maxRowsOnBoard,
+      brand: config.brand,
+      tiers: tiersInPlay()
+    };
+  }
 
   function loadConfig() {
     return fetch("tiers.json", { cache: "no-cache" })
@@ -82,94 +107,39 @@ window.Booster = (function () {
           baseTiers = json.tiers;
         }
       })
-      .catch(function () { /* keep the built-in tiers */ })
-      .then(function () {
-        readOverrides();
-        applyOverrides();
-      });
+      .catch(function () { /* keep the built-in tiers */ });
   }
 
-  /* ---------- amounts changed on this device ----------
-     tiers.json is what everyone shares. A manager can still change a threshold
-     or an amount here, which is kept in this browser only and never reaches
-     anyone else — so the UI has to say so, and offer the file to commit. */
+  /* ---------- tiers ----------
+     tiers.json holds the defaults. Each board edits its own copy of the
+     thresholds and amounts, the same as any other field on its form, so a
+     one-off board never changes what the next one shows. */
 
-  function readOverrides() {
-    try {
-      var raw = localStorage.getItem(OVERRIDE_KEY);
-      overrides = raw ? (JSON.parse(raw) || {}) : {};
-    } catch (e) { overrides = {}; }
+  function tiersInPlay() { return activeTiers || baseTiers; }
+
+  /* Set by whoever is about to render, and cleared after. */
+  function useTiers(tiers) { activeTiers = tiers && tiers.length ? tiers : null; }
+
+  /* The committed defaults, as plain {min, amount} per tier, to seed a form. */
+  function defaultTierValues() {
+    var out = {};
+    baseTiers.forEach(function (t) { out[t.key] = { min: t.min, amount: t.amount }; });
+    return out;
   }
 
-  function writeOverrides() {
-    try {
-      if (hasOverrides()) localStorage.setItem(OVERRIDE_KEY, JSON.stringify(overrides));
-      else localStorage.removeItem(OVERRIDE_KEY);
-    } catch (e) { /* blocked storage: the edit lives for this page load only */ }
-  }
-
-  function applyOverrides() {
-    config.tiers = baseTiers.map(function (t) {
-      var o = overrides[t.key];
-      if (!o) return t;
+  /* Fold a form's numbers back onto the committed tiers, so colours, names and
+     badges keep coming from tiers.json while the numbers come from the board. */
+  function tiersFrom(values) {
+    return baseTiers.map(function (t) {
+      var v = values && values[t.key];
+      if (!v) return t;
       var copy = {};
       for (var k in t) if (Object.prototype.hasOwnProperty.call(t, k)) copy[k] = t[k];
-      if (typeof o.min === "number") copy.min = o.min;
-      if (typeof o.amount === "number") copy.amount = o.amount;
+      if (typeof v.min === "number") copy.min = v.min;
+      if (typeof v.amount === "number") copy.amount = v.amount;
       return copy;
     });
-    listeners.forEach(function (fn) { try { fn(); } catch (e) { /* one listener must not stop the rest */ } });
   }
-
-  function hasOverrides() {
-    for (var k in overrides) {
-      if (Object.prototype.hasOwnProperty.call(overrides, k)) return true;
-    }
-    return false;
-  }
-
-  /* field is "min" or "amount"; a value equal to the committed one clears the
-     override rather than storing a redundant copy. */
-  function setTierValue(key, field, value) {
-    var base = null;
-    for (var i = 0; i < baseTiers.length; i++) if (baseTiers[i].key === key) base = baseTiers[i];
-    if (!base) return;
-
-    var n = Math.max(0, Math.round(Number(value) || 0));
-    if (n === base[field]) {
-      if (overrides[key]) {
-        delete overrides[key][field];
-        var empty = true;
-        for (var f in overrides[key]) if (Object.prototype.hasOwnProperty.call(overrides[key], f)) empty = false;
-        if (empty) delete overrides[key];
-      }
-    } else {
-      if (!overrides[key]) overrides[key] = {};
-      overrides[key][field] = n;
-    }
-    writeOverrides();
-    applyOverrides();
-  }
-
-  function resetTiers() {
-    overrides = {};
-    writeOverrides();
-    applyOverrides();
-  }
-
-  /* The committed file with this device's values folded in, ready to replace
-     tiers.json in the repository. */
-  function tiersFile() {
-    var out = {
-      currency: config.currency,
-      maxRowsOnBoard: config.maxRowsOnBoard,
-      brand: config.brand,
-      tiers: config.tiers
-    };
-    return JSON.stringify(out, null, 2) + "\n";
-  }
-
-  function onTiersChanged(fn) { if (typeof fn === "function") listeners.push(fn); }
 
   /* ---------- text ---------- */
 
@@ -198,12 +168,13 @@ window.Booster = (function () {
   /* ---------- tiers ---------- */
 
   function sortedTiers() {
-    return config.tiers.slice().sort(function (a, b) { return b.min - a.min; });
+    return tiersInPlay().slice().sort(function (a, b) { return b.min - a.min; });
   }
 
   function tierByKey(k) {
-    for (var i = 0; i < config.tiers.length; i++) {
-      if (config.tiers[i].key === k) return config.tiers[i];
+    var all = tiersInPlay();
+    for (var i = 0; i < all.length; i++) {
+      if (all[i].key === k) return all[i];
     }
     return null;
   }
@@ -291,11 +262,11 @@ window.Booster = (function () {
     get: get,
     getConfig: getConfig,
     loadConfig: loadConfig,
-    setTierValue: setTierValue,
-    resetTiers: resetTiers,
-    hasOverrides: hasOverrides,
-    tiersFile: tiersFile,
-    onTiersChanged: onTiersChanged,
+    couplets: coupletList,
+    partnerOf: partnerOf,
+    useTiers: useTiers,
+    defaultTierValues: defaultTierValues,
+    tiersFrom: tiersFrom,
     esc: esc,
     todayISO: todayISO,
     formatDate: formatDate,

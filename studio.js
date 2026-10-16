@@ -10,7 +10,7 @@
   function esc(s) { return Booster.esc(s); }
 
   var template = null;
-  var state = { values: {}, rows: [], examples: false };
+  var state = { values: {}, rows: [], tiers: {}, examples: false };
   var draftKey = "";
 
   /* ---------- draft, kept in this browser only ---------- */
@@ -27,6 +27,7 @@
       if (!d || typeof d.values !== "object") return false;
       state.values = d.values || {};
       state.rows = Array.isArray(d.rows) ? d.rows : [];
+      state.tiers = d.tiers && typeof d.tiers === "object" ? d.tiers : Booster.defaultTierValues();
       state.examples = !!d.examples;
       return true;
     } catch (e) { return false; }
@@ -76,6 +77,7 @@
 
   function renderRows() {
     if (!template.rows) return;
+    Booster.useTiers(Booster.tiersFrom(state.tiers));
     var cols = template.rows.columns;
     var config = Booster.getConfig();
     var tiers = Booster.sortedTiers();
@@ -131,9 +133,48 @@
     }).join("") + "<span></span>";
   }
 
+  /* ---------- tiers, as fields on this board ---------- */
+
+  function renderTiers() {
+    Booster.useTiers(Booster.tiersFrom(state.tiers));
+    var config = Booster.getConfig();
+
+    document.getElementById("tiers").innerHTML = Booster.sortedTiers().map(function (t) {
+      return '<div class="tierref" data-key="' + esc(t.key) + '">' +
+        '<div class="tr-mark">' + Booster.mark(t, 26) + "</div>" +
+        '<div class="tr-name">' + esc(t.name) + "</div>" +
+        '<div class="tr-field"><label for="tmin_' + esc(t.key) + '">Meters</label>' +
+        '<div class="tr-input"><input id="tmin_' + esc(t.key) + '" data-tier="min" type="number" min="0" step="1" inputmode="numeric" value="' + t.min + '"><span>+</span></div></div>' +
+        '<div class="tr-field"><label for="tamt_' + esc(t.key) + '">Each</label>' +
+        '<div class="tr-input"><span>' + config.currency + '</span><input id="tamt_' + esc(t.key) + '" data-tier="amount" type="number" min="0" step="1" inputmode="numeric" value="' + t.amount + '"></div></div>' +
+        "</div>";
+    }).join("");
+  }
+
+  function tiersDiffer() {
+    var base = Booster.defaultTierValues();
+    for (var k in base) {
+      if (!Object.prototype.hasOwnProperty.call(base, k)) continue;
+      var mine = state.tiers[k];
+      if (!mine) continue;
+      if (mine.min !== base[k].min || mine.amount !== base[k].amount) return true;
+    }
+    return false;
+  }
+
+  function updateTierNote() {
+    var note = document.getElementById("tiernote");
+    if (!note) return;
+    note.textContent = tiersDiffer()
+      ? "Changed for this board only. Every other template still uses the defaults from tiers.json."
+      : "These are the defaults from tiers.json. Change them here and only this board follows.";
+    document.getElementById("tierreset").hidden = !tiersDiffer();
+  }
+
   /* ---------- board ---------- */
 
   function renderBoard() {
+    Booster.useTiers(Booster.tiersFrom(state.tiers));
     var config = Booster.getConfig();
     $("board").innerHTML = template.render(state, config);
     var board = $("board").firstChild;
@@ -146,12 +187,31 @@
   function refresh() {
     renderRows();
     renderBoard();
+    updateTierNote();
     saveDraft();
   }
 
   /* ---------- wiring ---------- */
 
   function wire() {
+    $("tiers").addEventListener("input", function (e) {
+      var field = e.target.getAttribute("data-tier");
+      if (!field) return;
+      var key = e.target.closest(".tierref").getAttribute("data-key");
+      if (!state.tiers[key]) state.tiers[key] = {};
+      state.tiers[key][field] = Math.max(0, parseInt(e.target.value, 10) || 0);
+      renderRows();
+      renderBoard();
+      updateTierNote();
+      saveDraft();
+    });
+
+    $("tierreset").addEventListener("click", function () {
+      state.tiers = Booster.defaultTierValues();
+      renderTiers();
+      refresh();
+    });
+
     $("fields").addEventListener("input", function (e) {
       var key = e.target.getAttribute("data-key");
       if (!key) return;
@@ -259,6 +319,7 @@
     $("tdesc").textContent = template.description;
 
     if (!loadDraft()) {
+      state.tiers = Booster.defaultTierValues();
       state.values = defaults();
       if (template.rows) {
         state.rows = (template.rows.examples || []).map(function (e) {
@@ -270,6 +331,14 @@
       }
     }
 
+    var partner = Booster.partnerOf(template);
+    if (partner) {
+      var link = $("partner");
+      link.href = "studio.html?t=" + encodeURIComponent(partner.id);
+      link.textContent = partner.name;
+      $("partnerline").hidden = false;
+    }
+
     if (template.rows) {
       $("rowcard").hidden = false;
       $("rowcard").querySelector("h2").textContent = template.rows.label;
@@ -279,15 +348,10 @@
     if (!state.examples) hideBanner();
 
     renderFields();
+    renderTiers();
     wire();
     refresh();
   }
-
-  Booster.onTiersChanged(function () {
-    if (!template) return;
-    renderRows();
-    renderBoard();
-  });
 
   Booster.loadConfig().then(start);
 })();

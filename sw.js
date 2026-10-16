@@ -5,7 +5,7 @@
  * connection. Exporting a PNG needs the renderer from the CDN, so a board made
  * fully offline may not download until there is signal again.
  */
-var CACHE = "booster-v3";
+var CACHE = "booster-v4";
 
 var SHELL = [
   "./",
@@ -15,7 +15,6 @@ var SHELL = [
   "core.js",
   "home.js",
   "studio.js",
-  "tierref.js",
   "install.js",
   "tiers.json",
   "manifest.json",

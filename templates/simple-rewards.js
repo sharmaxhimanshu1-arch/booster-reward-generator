@@ -11,6 +11,9 @@
  */
 Booster.register({
   id: "simple-rewards",
+  couplet: "warm",
+  coupletName: "Warm gradient",
+  role: "rewards",
   name: "Simple Rewards",
   description: "The sunburst poster. A big WIN, then one card per tier with the meters and what each crew member takes home.",
   size: { w: 1080, h: 1350 },

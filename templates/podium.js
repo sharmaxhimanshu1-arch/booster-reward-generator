@@ -4,6 +4,9 @@
  */
 Booster.register({
   id: "podium",
+  couplet: "yellow",
+  coupletName: "Yellow",
+  role: "leaderboard",
   name: "Winners Podium",
   description: "The leaderboard in the yellow brand style. Top three crews on a podium, the rest in a table, with the tier guide below.",
   size: { w: 1080, h: 1350 },

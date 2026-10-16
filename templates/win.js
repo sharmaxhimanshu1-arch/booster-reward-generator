@@ -4,6 +4,9 @@
  */
 Booster.register({
   id: "win",
+  couplet: "yellow",
+  coupletName: "Yellow",
+  role: "rewards",
   name: "Win Cash Rewards",
   description: "The tier poster in the yellow brand style. A big WIN, then a row per tier with the meters and the cash each.",
   size: { w: 1080, h: 1350 },

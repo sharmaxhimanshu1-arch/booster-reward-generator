@@ -18,16 +18,17 @@ no build step.
 | `studio.html`, `studio.js` | The editor. Builds its form from whichever template `?t=` names |
 | `core.js` | Template registry, tier config, tier badges, preview scaling, PNG export |
 | `templates/*.js` | One file per creative. See `templates/README.md` |
-| `tiers.json` | **Tier thresholds and amounts. The single source of truth.** |
+| `tiers.json` | Tier names, colours, badges, and the **default** thresholds and amounts |
 | `styles.css` | Tool chrome and the shared board frame |
 | `assets/` | The company logo and the app icons |
 | `manifest.json`, `sw.js`, `install.js` | Installable app: icons, offline shell, install prompt |
 | `404.html` | Short links — turns `/podium` into the studio for that template |
 
-Six creatives ship today, as three couplets — a leaderboard and a tier poster
-in each style:
+Creatives come in **couplets**: a leaderboard and the reward poster that matches
+it. The two share a look and are meant to go out together, so the home screen
+groups them and each one links to its pair.
 
-| Style | Leaderboard | Tier poster |
+| Couplet | Leaderboard | Reward info |
 | --- | --- | --- |
 | Dark | Yesterday's Winners | Booster Rewards |
 | Yellow | Winners Podium | Win Cash Rewards |
@@ -52,24 +53,16 @@ is per-browser and not shared.
 
 ## Changing the reward amounts
 
-`tiers.json` is what everyone shares. Every template reads it at page load, so
-the winners board, the rewards poster and the tier panels all change together.
+Thresholds and amounts work like any other field: each board has its own, in a
+**Tiers on this board** card in the studio. Change Gold to ₹650 on one
+leaderboard and only that board follows — the poster beside it, and every other
+template, still shows the defaults. The card says which state it is in and
+offers **Back to the defaults**. The numbers are saved with that board's draft,
+in that browser.
 
-There are two ways to change a value.
-
-**Try it out, on one device.** The tier panel on the home screen and in the
-studio is editable: change a threshold or an amount and every board updates
-straight away. That edit is saved in that browser alone and reaches nobody else,
-so the panel marks itself *Changed on this device* and offers two buttons —
-**Download tiers.json**, which hands you the file with your values in it, and
-**Undo my changes**, which goes back to the committed ones.
-
-**Make it stick for everyone.** Commit that downloaded file over `tiers.json`.
-Until you do, a manager on another phone still generates boards at the old
-amounts, which is the one failure worth watching for: two boards, same day,
-different money.
-
-Editing the file directly works just as well:
+`tiers.json` holds the defaults every board starts from, along with each tier's
+name, colour and badge. Edit it and commit to move the starting point for
+everyone:
 
 ```json
 { "key": "gold", "name": "Gold", "min": 700, "amount": 500, "mark": "star", ... }
@@ -79,6 +72,9 @@ Editing the file directly works just as well:
 - `amount` — paid to the Operator **and** to the Tracker, so a Gold crew costs 2 × 500.
 - `mark` — the tier's badge shape: `diamond`, `star` or `ring`.
 - `color`, `edge`, `tint` — how the tier is drawn on a board.
+
+Only `min` and `amount` can be changed per board. A tier's name, colour and
+badge always come from this file, so the three tiers look the same everywhere.
 
 The tiers do not have to be three. Add or remove entries and the forms, the
 boards and the legends all follow. Keep the thresholds from overlapping: a crew

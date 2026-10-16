@@ -1,13 +1,16 @@
 /* Home screen
- * Lists every registered template as a card with a live preview of the real
- * board, so a manager recognises the creative before opening it.
+ *
+ * The creatives come in couplets: a leaderboard and the reward poster that
+ * matches it. They are meant to go out together and share a look, so the
+ * gallery groups them rather than listing six loose cards.
  */
 (function () {
   "use strict";
 
-  var gallery = document.getElementById("gallery");
-  if (!gallery) return;
+  var host = document.getElementById("couplets");
+  if (!host) return;
 
+  /* Every card previews the real board at the committed defaults. */
   function previewState(t) {
     var values = {};
     (t.fields || []).forEach(function (f) {
@@ -28,30 +31,63 @@
     return { values: values, rows: rows, examples: true };
   }
 
-  function draw() {
-    var config = Booster.getConfig();
+  function roleLabel(t) {
+    return t.role === "leaderboard" ? "Leaderboard" : t.role === "rewards" ? "Reward info" : "";
+  }
 
-    gallery.innerHTML = Booster.list().map(function (t) {
-      return '<a class="tcard" href="studio.html?t=' + encodeURIComponent(t.id) + '">' +
-        '<div class="tcard-stage" data-id="' + Booster.esc(t.id) + '">' +
-        '<div class="tcard-board"></div></div>' +
-        '<div class="tcard-body">' +
-        "<h3>" + Booster.esc(t.name) + "</h3>" +
-        "<p>" + Booster.esc(t.description) + "</p>" +
-        '<span class="tcard-go">Open template &rarr;</span>' +
-        "</div></a>";
+  function card(t) {
+    var role = roleLabel(t);
+    return '<a class="tcard" href="studio.html?t=' + encodeURIComponent(t.id) + '">' +
+      '<div class="tcard-stage" data-id="' + Booster.esc(t.id) + '">' +
+      '<div class="tcard-board"></div></div>' +
+      '<div class="tcard-body">' +
+      (role ? '<div class="tcard-role">' + Booster.esc(role) + "</div>" : "") +
+      "<h3>" + Booster.esc(t.name) + "</h3>" +
+      "<p>" + Booster.esc(t.description) + "</p>" +
+      '<span class="tcard-go">Open template &rarr;</span>' +
+      "</div></a>";
+  }
+
+  function draw() {
+    var groups = Booster.couplets();
+
+    host.innerHTML = groups.map(function (g) {
+      return '<section class="couplet">' +
+        '<h2 class="sectionhead">' + Booster.esc(g.name) +
+        '<span class="couplet-count">' + g.templates.length + " creatives</span></h2>" +
+        '<div class="gallery">' + g.templates.map(card).join("") + "</div>" +
+        "</section>";
     }).join("");
 
+    /* Each preview renders against the defaults, never another board's edits. */
     Booster.list().forEach(function (t) {
-      var stage = gallery.querySelector('.tcard-stage[data-id="' + t.id + '"]');
+      var stage = host.querySelector('.tcard-stage[data-id="' + t.id + '"]');
       if (!stage) return;
+      Booster.useTiers(null);
       var board = stage.querySelector(".tcard-board");
       board.style.width = t.size.w + "px";
       board.style.height = t.size.h + "px";
-      board.innerHTML = t.render(previewState(t), config);
+      board.innerHTML = t.render(previewState(t), Booster.getConfig());
       stage.style.background = t.background || "#0E1419";
       fitCard(stage, board, t);
     });
+
+    drawDefaults();
+  }
+
+  /* A read-only reminder of where every board starts. The numbers are edited
+     per board, inside the studio, so there is nothing to change here. */
+  function drawDefaults() {
+    var panel = document.getElementById("tierdefaults");
+    if (!panel) return;
+    var config = Booster.getConfig();
+    panel.innerHTML = Booster.sortedTiers().map(function (t) {
+      return '<div class="tierdef">' +
+        "<div>" + Booster.mark(t, 26) + "</div>" +
+        '<div class="td-name">' + Booster.esc(t.name) + "</div>" +
+        '<div class="td-min">' + t.min + "+ m</div>" +
+        '<div class="td-amt">' + config.currency + t.amount + " each</div></div>";
+    }).join("");
   }
 
   /* The card shows the top of the board, cropped, rather than the whole
@@ -59,19 +95,17 @@
   function fitCard(stage, board, t) {
     var w = stage.clientWidth;
     if (!w) return;
-    var k = w / t.size.w;
     board.style.transformOrigin = "top left";
-    board.style.transform = "scale(" + k + ")";
+    board.style.transform = "scale(" + (w / t.size.w) + ")";
   }
 
   function refit() {
     Booster.list().forEach(function (t) {
-      var stage = gallery.querySelector('.tcard-stage[data-id="' + t.id + '"]');
+      var stage = host.querySelector('.tcard-stage[data-id="' + t.id + '"]');
       if (stage) fitCard(stage, stage.querySelector(".tcard-board"), t);
     });
   }
 
   window.addEventListener("resize", refit);
-  Booster.onTiersChanged(draw);
   Booster.loadConfig().then(draw);
 })();

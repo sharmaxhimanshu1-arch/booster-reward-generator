@@ -141,6 +141,49 @@ a { color: inherit; }
 .tcard-body p { margin: 0; color: var(--muted); font-size: 14px; }
 .tcard-go { margin-top: 6px; font-size: 14px; font-weight: 700; color: var(--fg); }
 
+#couplets { margin-top: 30px; }
+.couplet + .couplet { margin-top: 34px; }
+.couplet .sectionhead {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.couplet-count {
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 500;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+.couplet .gallery { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+
+.tcard-role {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.partnerline { margin: 8px 0 0; font-size: 14px; color: var(--muted); }
+.partnerline a { font-weight: 700; color: var(--fg); }
+
+.tierdef {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto auto;
+  gap: 14px;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+.tierdef:first-child { border-top: 0; }
+.tierdef .td-name { font-weight: 700; }
+.tierdef .td-min, .tierdef .td-amt { font-variant-numeric: tabular-nums; color: var(--muted); }
+.tierdef .td-amt { font-weight: 700; color: var(--fg); }
+
 .tierpanel { margin-top: 34px; max-width: 560px; }
 
 /* ---- Cards and forms ---- */
@@ -321,15 +364,6 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
 }
 .tierref .tr-input input:focus-visible { outline: none; }
 
-.tr-changed {
-  margin-top: 14px;
-  padding: 14px 16px;
-  border: 1px solid var(--accent);
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
-}
-.tr-changed p { margin: 0; font-size: 13.5px; }
-.tr-changed .note { margin-top: 10px; }
 
 @media (max-width: 520px) {
   .tierref { grid-template-columns: 30px minmax(0, 1fr); row-gap: 10px; }

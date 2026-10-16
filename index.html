@@ -37,13 +37,12 @@
     <button type="button" class="btn btn-primary" id="installbtn">Install</button>
   </div>
 
-  <h2 class="sectionhead">Templates</h2>
-  <div class="gallery" id="gallery"></div>
+  <div id="couplets"></div>
 
   <section class="card tierpanel">
-    <h2>Current tiers</h2>
-    <div id="tiers"></div>
-    <p class="note">Every template uses these. Change one here to try it out — the change stays on this device until you commit the file it offers you.</p>
+    <h2>Default tiers</h2>
+    <div id="tierdefaults"></div>
+    <p class="note">Where every board starts. Each board can change its own numbers once you open it; to move the starting point for everyone, edit <code>tiers.json</code> and commit.</p>
   </section>
 
   <footer class="pagefoot">
@@ -58,7 +57,6 @@
 <script src="templates/win.js"></script>
 <script src="templates/simple-winners.js"></script>
 <script src="templates/simple-rewards.js"></script>
-<script src="tierref.js"></script>
 <script src="home.js"></script>
 <script src="install.js"></script>
 <script>

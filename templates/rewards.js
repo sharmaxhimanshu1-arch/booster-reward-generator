@@ -4,6 +4,9 @@
  */
 Booster.register({
   id: "rewards",
+  couplet: "dark",
+  coupletName: "Dark",
+  role: "rewards",
   name: "Booster Rewards",
   description: "The standing poster explaining the tiers. Thresholds and amounts come straight from tiers.json.",
   size: { w: 1080, h: 1350 },

@@ -4,6 +4,9 @@
  */
 Booster.register({
   id: "winners",
+  couplet: "dark",
+  coupletName: "Dark",
+  role: "leaderboard",
   name: "Yesterday's Winners",
   description: "The daily leaderboard. Ranks each crew by meters and shows what the Operator and Tracker each take home.",
   size: { w: 1080, h: 1350 },

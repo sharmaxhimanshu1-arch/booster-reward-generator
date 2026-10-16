@@ -23,6 +23,9 @@ Booster.register({
   id: "winners",                      // URL slug, unique
   name: "Yesterday's Winners",        // card title
   description: "...",                 // one line on the card
+  couplet: "dark",                    // which couplet it belongs to
+  coupletName: "Dark",                // the heading for that couplet
+  role: "leaderboard",                // "leaderboard" or "rewards"
   size: { w: 1080, h: 1350 },         // exported pixel size
   background: "#0E1419",              // fills any transparent edge on export
 
@@ -38,7 +41,29 @@ Booster.register({
 });
 ```
 
-### Fields
+### Couplets
+
+A creative belongs to a couplet: a leaderboard and the reward poster that
+matches it. Give both files the same `couplet` id and `coupletName`, and give
+each its own `role` — `leaderboard` or `rewards`. The home screen groups them
+under that heading, labels each card by its role, and the studio links each one
+to its pair. A template with no `couplet` still works; it lands under "Other".
+
+Add creatives in twos. A leaderboard with no poster to explain the tiers leaves
+a crew with numbers and no idea what earns them.
+
+## Tiers
+
+A board gets its tier thresholds and amounts from its own form, not from a
+shared setting, so a one-off board never changes what the next one shows.
+`Booster.sortedTiers()`, `tierFor()` and `effectiveTier()` read whatever the
+board being rendered is using, so a template calls them exactly as before and
+needs no code for this.
+
+Only `min` and `amount` vary per board. Name, colour and badge always come from
+`tiers.json`.
+
+## Fields
 
 `type` is `text`, `textarea`, `number` or `date`. `default` seeds the form, and
 the literal `"today"` on a date field means the current date. `hint` adds a line
