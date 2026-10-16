@@ -23,6 +23,7 @@ Booster.register({
   id: "winners",                      // URL slug, unique
   name: "Yesterday's Winners",        // card title
   description: "...",                 // one line on the card
+  code: "D1",                         // permanent, quotable, never reused
   couplet: "dark",                    // which couplet it belongs to
   coupletName: "Dark",                // the heading for that couplet
   role: "leaderboard",                // "leaderboard" or "rewards"
@@ -41,7 +42,19 @@ Booster.register({
 });
 ```
 
-### Couplets
+### The code
+
+Give every creative a `code`: the couplet's letter plus `1` for the leaderboard
+or `2` for the reward info. It is shown on the card, in the studio, in the tab
+title and at the front of the downloaded file, and it works in a URL anywhere a
+template id does.
+
+Pick the next free letter for a new couplet and write the code in by hand.
+Never change a code and never give a retired one to something else — people
+quote codes in messages, and a code that moved makes every one of those
+messages point at the wrong creative.
+
+## Couplets
 
 A creative belongs to a couplet: a leaderboard and the reward poster that
 matches it. Give both files the same `couplet` id and `coupletName`, and give

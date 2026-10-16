@@ -4,6 +4,7 @@
  */
 Booster.register({
   id: "win",
+  code: "Y2",
   couplet: "yellow",
   coupletName: "Yellow",
   role: "rewards",

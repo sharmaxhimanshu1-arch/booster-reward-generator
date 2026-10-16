@@ -4,6 +4,7 @@
  */
 Booster.register({
   id: "rewards",
+  code: "D2",
   couplet: "dark",
   coupletName: "Dark",
   role: "rewards",

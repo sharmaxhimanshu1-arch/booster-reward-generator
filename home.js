@@ -41,7 +41,10 @@
       '<div class="tcard-stage" data-id="' + Booster.esc(t.id) + '">' +
       '<div class="tcard-board"></div></div>' +
       '<div class="tcard-body">' +
-      (role ? '<div class="tcard-role">' + Booster.esc(role) + "</div>" : "") +
+      '<div class="tcard-meta">' +
+      '<span class="code">' + Booster.esc(t.code || "\u2014") + "</span>" +
+      (role ? '<span class="tcard-role">' + Booster.esc(role) + "</span>" : "") +
+      "</div>" +
       "<h3>" + Booster.esc(t.name) + "</h3>" +
       "<p>" + Booster.esc(t.description) + "</p>" +
       '<span class="tcard-go">Open template &rarr;</span>' +

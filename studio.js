@@ -271,6 +271,21 @@
 
   function hideBanner() { $("examplebanner").hidden = true; }
 
+  /* The code is what someone quotes when asking for a change, so make it one
+     tap to carry into a message. */
+  $("tcode").addEventListener("click", function () {
+    var btn = this;
+    var code = template && template.code;
+    if (!code) return;
+    var done = function (ok) {
+      btn.textContent = ok ? "Copied" : code;
+      if (ok) setTimeout(function () { btn.textContent = code; }, 1200);
+    };
+    try {
+      navigator.clipboard.writeText(code).then(function () { done(true); }, function () { done(false); });
+    } catch (e) { done(false); }
+  });
+
   $("download").addEventListener("click", function () {
     var status = $("status");
     var btn = this;
@@ -285,8 +300,10 @@
     btn.disabled = true;
 
     var board = $("board").firstChild;
-    Booster.exportPNG(board, template.size.w, template.size.h,
-      template.filename(state), template.background)
+    var name = template.filename(state);
+    if (template.code) name = template.code + "-" + name;
+
+    Booster.exportPNG(board, template.size.w, template.size.h, name, template.background)
       .then(function () {
         status.textContent = "Saved to your downloads. Send it to the crew group.";
       })
@@ -314,9 +331,15 @@
     }
 
     draftKey = "booster-draft-v2-" + template.id;
-    document.title = template.name + " — Daily Booster Studio";
+    var code = template.code || "";
+    document.title = (code ? code + " · " : "") + template.name + " — Daily Booster Studio";
     $("tname").textContent = template.name;
     $("tdesc").textContent = template.description;
+    if (code) {
+      $("tcode").textContent = code;
+      $("tcode").hidden = false;
+      $("tcode").title = "Copy " + code;
+    }
 
     if (!loadDraft()) {
       state.tiers = Booster.defaultTierValues();
@@ -335,7 +358,7 @@
     if (partner) {
       var link = $("partner");
       link.href = "studio.html?t=" + encodeURIComponent(partner.id);
-      link.textContent = partner.name;
+      link.textContent = (partner.code ? partner.code + " · " : "") + partner.name;
       $("partnerline").hidden = false;
     }
 

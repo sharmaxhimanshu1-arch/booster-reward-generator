@@ -11,6 +11,7 @@
  */
 Booster.register({
   id: "simple-rewards",
+  code: "W2",
   couplet: "warm",
   coupletName: "Warm gradient",
   role: "rewards",

@@ -12,6 +12,7 @@
  */
 Booster.register({
   id: "simple-winners",
+  code: "W1",
   couplet: "warm",
   coupletName: "Warm gradient",
   role: "leaderboard",

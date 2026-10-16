@@ -77,8 +77,14 @@ window.Booster = (function () {
     return order.map(function (id) { return byId[id]; });
   }
 
-  function get(id) {
-    return byId[id] || null;
+  /* A template answers to its id or to its code, so a person can type either
+     and a short link can carry whichever they were given. */
+  function get(key) {
+    if (!key) return null;
+    if (byId[key]) return byId[key];
+    var want = String(key).toUpperCase();
+    var hit = list().filter(function (t) { return (t.code || "").toUpperCase() === want; });
+    return hit[0] || null;
   }
 
   function getConfig() {

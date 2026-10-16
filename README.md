@@ -22,7 +22,7 @@ no build step.
 | `styles.css` | Tool chrome and the shared board frame |
 | `assets/` | The company logo and the app icons |
 | `manifest.json`, `sw.js`, `install.js` | Installable app: icons, offline shell, install prompt |
-| `404.html` | Short links — turns `/podium` into the studio for that template |
+| `404.html` | Short links — turns `/W1` or `/podium` into the studio for that creative |
 
 Creatives come in **couplets**: a leaderboard and the reward poster that matches
 it. The two share a look and are meant to go out together, so the home screen
@@ -30,9 +30,32 @@ groups them and each one links to its pair.
 
 | Couplet | Leaderboard | Reward info |
 | --- | --- | --- |
-| Dark | Yesterday's Winners | Booster Rewards |
-| Yellow | Winners Podium | Win Cash Rewards |
-| Warm gradient | Simple Winners | Simple Rewards |
+| Dark | **D1** Yesterday's Winners | **D2** Booster Rewards |
+| Yellow | **Y1** Winners Podium | **Y2** Win Cash Rewards |
+| Warm gradient | **W1** Simple Winners | **W2** Simple Rewards |
+
+## Creative codes
+
+Every creative has a short permanent code — a couplet letter and a role
+digit, where **1 is the leaderboard** and **2 is the reward info**. It is how a
+person names one creative out of six without describing it: "the gold amount on
+W1 is wrong" beats "the orange one with the list".
+
+The code appears on the card, in the studio header where one tap copies it, in
+the browser tab, and at the front of the downloaded file
+(`W2-booster-rewards.png`), so a file that reaches someone still says which
+creative made it.
+
+A code also works anywhere a template id does:
+
+```
+.../booster-reward-generator/W1
+.../booster-reward-generator/studio.html?t=W1
+```
+
+Codes are written into each template file by hand and **never change or get
+reused**, even if a creative is retired. A code that moved would turn every
+message that mentions it into a wrong instruction.
 
 ## Using it
 
@@ -96,11 +119,12 @@ Deploy from a branch**).
 A template opens at its own path, which is what you paste into a crew group:
 
 ```
+https://sharmaxhimanshu1-arch.github.io/booster-reward-generator/W1
+https://sharmaxhimanshu1-arch.github.io/booster-reward-generator/W2
 https://sharmaxhimanshu1-arch.github.io/booster-reward-generator/podium
-https://sharmaxhimanshu1-arch.github.io/booster-reward-generator/win
-https://sharmaxhimanshu1-arch.github.io/booster-reward-generator/winners
-https://sharmaxhimanshu1-arch.github.io/booster-reward-generator/rewards
 ```
+
+Either the code or the template id works as the last segment.
 
 Pages has no rewrite rules, so `404.html` does the work: it catches any path
 with no file behind it, reads the last segment and sends the browser to

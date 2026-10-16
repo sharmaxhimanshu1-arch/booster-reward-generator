@@ -7,14 +7,15 @@
 <meta name="robots" content="noindex">
 <script>
 /* Short links. GitHub Pages serves this page for any path it has no file for,
-   so /booster/podium lands here and is sent on to that template. Anything that
-   is not a template id goes to the home screen. */
+   so /podium and /W1 both land here and are sent on to that template. The
+   studio resolves either a template id or a creative code; anything else ends
+   up on the home screen. */
 (function () {
   var clean = location.pathname.replace(/\/+$/, "");
   var cut = clean.lastIndexOf("/");
   var id = clean.slice(cut + 1);
   var base = clean.slice(0, cut + 1);
-  if (base !== "/" && /^[a-z0-9-]{1,40}$/.test(id) && id !== "404.html") {
+  if (base !== "/" && /^[A-Za-z0-9-]{1,40}$/.test(id) && id !== "404.html") {
     location.replace(base + "studio.html?t=" + encodeURIComponent(id));
   } else {
     location.replace(base);

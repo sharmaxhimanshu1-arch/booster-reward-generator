@@ -4,6 +4,7 @@
  */
 Booster.register({
   id: "podium",
+  code: "Y1",
   couplet: "yellow",
   coupletName: "Yellow",
   role: "leaderboard",

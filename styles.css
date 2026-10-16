@@ -160,6 +160,35 @@ a { color: inherit; }
 }
 .couplet .gallery { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
 
+/* The creative's permanent code. It is how a person names one creative out of
+   six in a message, so it is shown wherever a creative is shown. */
+.code {
+  display: inline-block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.code-btn {
+  border: 0;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 5px 11px;
+  min-width: 56px;
+}
+.code-btn[hidden] { display: none; }
+
+.studiohead { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 14px; }
+.studiohead h1 { grid-column: 1; }
+.studiohead .code-btn { grid-column: 2; grid-row: 1; justify-self: end; }
+.studiohead .sub, .studiohead .partnerline { grid-column: 1 / -1; }
+
+.tcard-meta { display: flex; align-items: center; gap: 10px; }
+
 .tcard-role {
   font-size: 11px;
   letter-spacing: 0.1em;
